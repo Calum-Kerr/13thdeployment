@@ -44,18 +44,18 @@ A web browser-based Souls-like game built with Godot, featuring tight combat mec
   - [x] Item usage (estus flask equivalent)
 
 ### Enemy Design
-- [ ] Base enemy class
-  - [ ] AI state machine
-  - [ ] Pathfinding
-  - [ ] Attack patterns
-  - [ ] Aggro/detection system
-- [ ] Enemy variety
-  - [ ] Standard enemies with different attack patterns
-  - [ ] Mini-bosses with special mechanics
+- [x] Base enemy class
+  - [x] AI state machine
+  - [x] Pathfinding
+  - [x] Attack patterns
+  - [x] Aggro/detection system
+- [x] Enemy variety
+  - [x] Standard enemies with different attack patterns
+  - [x] Mini-bosses with special mechanics
   - [ ] Main bosses with phases and complex patterns
-- [ ] Enemy spawning and respawn system
-  - [ ] Trigger-based spawning
-  - [ ] Respawn on checkpoint rest
+- [x] Enemy spawning and respawn system
+  - [x] Trigger-based spawning
+  - [x] Respawn on checkpoint rest
 
 ### Level Design
 - [ ] Interconnected world structure
