@@ -29,7 +29,9 @@ func _ready():
         game_manager.register_player(self)
     
     # Connect health signal to update health bar
-    connect("health_changed", Callable(self, "_on_health_changed"))
+    if has_signal("health_changed"):
+        if has_method("_on_health_changed"):
+            connect("health_changed", Callable(self, "_on_health_changed"))
     
     # Initial health update
     emit_signal("health_changed", health, max_health)
@@ -105,7 +107,8 @@ func _attack():
     attack_cooldown = 0.5
     
     # Play attack animation
-    $AnimationPlayer.play("attack")
+    if has_node("AnimationPlayer"):
+        $AnimationPlayer.play("attack")
     
     # Check for enemies in attack range
     var attack_range = 2.0
@@ -127,7 +130,8 @@ func _attack():
 # Handle death
 func _die():
     # Play death animation
-    $AnimationPlayer.play("die")
+    if has_node("AnimationPlayer"):
+        $AnimationPlayer.play("die")
     
     # Disable controls
     set_physics_process(false)
@@ -148,7 +152,8 @@ func _die():
     set_physics_process(true)
     
     # Play respawn animation
-    $AnimationPlayer.play("respawn")
+    if has_node("AnimationPlayer"):
+        $AnimationPlayer.play("respawn")
 
 # Check if player is attacking (for enemy defensive behaviors)
 func is_attacking() -> bool:
@@ -160,6 +165,6 @@ func get_attack_damage() -> float:
 
 # Update health bar
 func _on_health_changed(current_health, max_health):
-    var health_bar = $HUD/HealthBar
+    var health_bar = get_node_or_null("HUD/HealthBar")
     if health_bar:
         health_bar.value = (current_health / max_health) * 100.0 

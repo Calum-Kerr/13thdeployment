@@ -1,0 +1,39 @@
+[gd_scene load_steps=2 format=3 uid="uid://c2u8pd5xfvt8q"]
+
+[ext_resource type="Script" path="res://src/web_export_main.gd" id="1_yjr8p"]
+
+[node name="WebExportMain" type="Node"]
+script = ExtResource("1_yjr8p")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 5, 8)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, -0.75, 0.433013, 0, 5, 0)
+shadow_enabled = true
+
+[node name="Instructions" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+text = "Soulsborne Web Game Demo
+
+Controls:
+- WASD or Arrow Keys to move
+- Space to attack
+- Tab to switch camera view
+- F1 to toggle debug info
+
+This is a simplified web export version.
+The full game has more features!"
+font_size = 48
+outline_size = 12
+
+[node name="Ground" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+size = Vector3(20, 1, 20)
+material = SubResource("StandardMaterial3D_j4k2l")
+
+[node name="PlayerSpawnPoint" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 5)
+
+[node name="EnemySpawnPoint" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -5) 
