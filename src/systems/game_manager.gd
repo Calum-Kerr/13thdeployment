@@ -1,5 +1,4 @@
 extends Node
-class_name GameManager
 
 """
 GameManager: Central coordinator for all game systems.

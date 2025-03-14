@@ -107,7 +107,8 @@ func _run_test_script(script_path: String) -> void:
 				try:
 					test_instance.call(method_name)
 				catch(error):
-					print(LOG_PREFIX + "    FAILED: " + error["source"] + " at line " + str(error["line"]))
+					var error_info = error
+					print(LOG_PREFIX + "    FAILED: " + error_info["source"] + " at line " + str(error_info["line"]))
 					success = false
 			
 			if test_instance.has_method("after_each"):

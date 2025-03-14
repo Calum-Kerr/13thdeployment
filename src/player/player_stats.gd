@@ -49,8 +49,8 @@ signal attribute_changed(attribute: String, new_value: int)
 @export var curse_resistance: float = 100.0
 
 # Initialize stats based on character class
-func initialize_class(class_name: String) -> void:
-    character_class = class_name
+func initialize_class(class_name_param: String) -> void:
+    character_class = class_name_param
     
     # Reset to base values
     vigor = 10
@@ -63,7 +63,7 @@ func initialize_class(class_name: String) -> void:
     luck = 10
     
     # Adjust based on class
-    match class_name:
+    match class_name_param:
         "Knight":
             vigor = 12
             endurance = 11
