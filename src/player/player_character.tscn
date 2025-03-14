@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://c5u8pd5xfvt8q"]
 
-[ext_resource type="Script" path="res://src/player/player_character.gd" id="1_yjk2t"]
+[ext_resource type="Script" uid="uid://b83jktb81pchw" path="res://src/player/player_character.gd" id="1_yjk2t"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_8f7vx"]
 radius = 0.4
@@ -14,15 +14,12 @@ height = 1.8
 size = Vector3(0.2, 0.1, 0.4)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_xfvt8"]
-radius = 0.5
-height = 2.0
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_b83jk"]
 size = Vector3(1, 0.5, 1)
 
 [sub_resource type="Animation" id="Animation_tb81p"]
 resource_name = "idle"
-length = 1.0
 loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -87,4 +84,4 @@ anims/idle = SubResource("Animation_tb81p")
 
 [node name="StaminaTimer" type="Timer" parent="."]
 wait_time = 0.1
-autostart = true 
+autostart = true

@@ -14,7 +14,7 @@ TestPlayer: A simplified player character for testing enemy behaviors.
 signal health_changed(current_health, max_health)
 
 # State
-var is_attacking: bool = false
+var attacking: bool = false
 var attack_cooldown: float = 0.0
 
 # Called when the node enters the scene tree for the first time
@@ -39,7 +39,7 @@ func _physics_process(delta):
     if attack_cooldown > 0:
         attack_cooldown -= delta
         if attack_cooldown <= 0:
-            is_attacking = false
+            attacking = false
     
     # Get input direction
     var input_dir = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
@@ -78,7 +78,7 @@ func take_damage(damage: float, attacker = null):
 
 # Perform attack
 func _attack():
-    is_attacking = true
+    attacking = true
     attack_cooldown = 0.5
     
     # Play attack animation
@@ -129,7 +129,11 @@ func _die():
 
 # Check if player is attacking (for enemy defensive behaviors)
 func is_attacking() -> bool:
-    return is_attacking 
+    return attacking 
+
+# Get attack damage
+func get_attack_damage() -> float:
+    return 20.0
 
 # Update health bar
 func _on_health_changed(current_health, max_health):

@@ -24,12 +24,11 @@ func _ready():
     super._ready()
     
     # Set mini-boss specific stats
-    max_health = 300.0
-    health = max_health
+    base_health = 300.0
+    current_health = base_health
     attack_damage = 25.0
-    defense = 15.0
     movement_speed = 3.5
-    detection_range = 15.0
+    aggro_range = 15.0
     attack_range = 2.0
     attack_cooldown = 1.5
     
@@ -42,7 +41,7 @@ func _ready():
     add_to_group("mini_bosses")
     
     # Find player if not already set
-    if not player_ref:
+    if not target:
         _find_player()
 
 # Override physics process
@@ -67,28 +66,26 @@ func _physics_process(delta):
             velocity = Vector3.ZERO
     
     # Check for phase transition
-    if current_phase == 1 and health <= max_health * phase_threshold:
+    if current_phase == 1 and current_health <= base_health * phase_threshold:
         _transition_to_phase_two()
 
 # Custom behavior for mini-boss
-func _custom_behavior(delta):
+func _custom_behavior(delta: float) -> void:
     # Only perform special attacks if player is detected
-    if current_state == STATE.CHASE or current_state == STATE.ATTACK:
+    if current_state == EnemyState.CHASE or current_state == EnemyState.ATTACK:
         # Try special attack if cooldown is ready
-        if special_attack_timer <= 0 and current_state != STATE.STAGGER:
+        if special_attack_timer <= 0 and current_state != EnemyState.STAGGERED:
             var special_attack_chance = 0.3 if current_phase == 1 else 0.5
             if randf() < special_attack_chance:
                 _perform_special_attack()
-                return true
+                return
         
         # Try dash attack if cooldown is ready
-        if dash_timer <= 0 and current_phase == 2 and current_state != STATE.STAGGER:
+        if dash_timer <= 0 and current_phase == 2 and current_state != EnemyState.STAGGERED:
             var dash_chance = 0.4
-            if randf() < dash_chance and player_ref and player_ref.global_position.distance_to(global_position) > 3.0:
+            if randf() < dash_chance and target and target.global_position.distance_to(global_position) > 3.0:
                 _perform_dash_attack()
-                return true
-    
-    return false
+                return
 
 # Transition to phase two with enhanced abilities
 func _transition_to_phase_two():
@@ -106,7 +103,7 @@ func _transition_to_phase_two():
     attack_cooldown *= 0.8
     
     # Emit signal for UI/sound effects
-    emit_signal("health_changed", health, max_health)
+    emit_signal("health_changed", current_health, base_health)
 
 # Perform a special area-of-effect attack
 func _perform_special_attack():
@@ -114,7 +111,7 @@ func _perform_special_attack():
     special_attack_timer = special_attack_cooldown
     
     # Change state to special attack
-    _change_state(STATE.ATTACK)
+    _change_state(EnemyState.ATTACK)
     
     # Play animation
     if animation_player:
@@ -125,8 +122,8 @@ func _perform_special_attack():
         await get_tree().create_timer(1.0).timeout
     
     # Apply AOE damage
-    if player_ref and player_ref.global_position.distance_to(global_position) <= aoe_attack_range:
-        player_ref.take_damage(aoe_attack_damage, self)
+    if target and target.global_position.distance_to(global_position) <= aoe_attack_range:
+        target.take_damage(aoe_attack_damage, self)
     
     # Visual effect
     if special_attack_particles:
@@ -135,7 +132,7 @@ func _perform_special_attack():
         special_attack_particles.emitting = false
     
     # Return to chase state
-    _change_state(STATE.CHASE)
+    _change_state(EnemyState.CHASE)
 
 # Perform a dash attack
 func _perform_dash_attack():
@@ -143,8 +140,8 @@ func _perform_dash_attack():
     dash_timer = dash_cooldown
     
     # Calculate dash direction towards player
-    if player_ref:
-        dash_direction = (player_ref.global_position - global_position).normalized()
+    if target:
+        dash_direction = (target.global_position - global_position).normalized()
         dash_direction.y = 0  # Keep dash on horizontal plane
         
         # Start dash
@@ -159,15 +156,15 @@ func _perform_dash_attack():
         await get_tree().create_timer(dash_duration).timeout
         
         # Attack at the end of dash
-        if player_ref and player_ref.global_position.distance_to(global_position) <= attack_range * 1.5:
-            player_ref.take_damage(attack_damage * 1.5, self)
+        if target and target.global_position.distance_to(global_position) <= attack_range * 1.5:
+            target.take_damage(attack_damage * 1.5, self)
         
         # Return to chase state
         is_dashing = false
-        _change_state(STATE.CHASE)
+        _change_state(EnemyState.CHASE)
 
 # Override take damage to add phase-specific behavior
-func take_damage(damage, attacker):
+func take_damage(damage: float, attacker = null) -> void:
     # Phase 2 has a chance to reduce damage
     if current_phase == 2:
         var damage_reduction_chance = 0.3
@@ -178,40 +175,38 @@ func take_damage(damage, attacker):
     super.take_damage(damage, attacker)
     
     # Counter-attack in phase 2 with a chance
-    if current_phase == 2 and health > 0:
+    if current_phase == 2 and current_health > 0:
         var counter_chance = 0.4
         if randf() < counter_chance and attacker and attacker.has_method("take_damage"):
-            # Quick recovery and counter
-            stagger_time = 0.2  # Reduce stagger time
+            # Quick recovery
             await get_tree().create_timer(0.3).timeout
             
             if is_instance_valid(attacker) and attacker.has_method("take_damage"):
                 attacker.take_damage(attack_damage * 0.7, self)
 
 # Handle death with special effects
-func _on_death():
+func _die() -> void:
     # Play death animation with particles
     if special_attack_particles:
         special_attack_particles.emitting = true
     
     # Call parent method
-    super._on_death()
+    super._die()
     
     # Add additional death effects
     await get_tree().create_timer(3.0).timeout
     
     # Drop special loot
     # This would connect to your loot system
-    emit_signal("enemy_killed", 150)  # More souls than standard enemies
+    emit_signal("enemy_died", 150)  # More souls than standard enemies
 
 # Handle detection area signals
-func _on_detection_area_body_entered(body):
+func _on_detection_area_body_entered(body: Node3D) -> void:
     if body.is_in_group("player"):
-        player_ref = body
-        player_detected = true
-        _change_state(STATE.CHASE)
+        target = body
+        _check_for_player()
 
-func _on_detection_area_body_exited(body):
-    if body.is_in_group("player") and body == player_ref:
-        player_detected = false
-        pursuit_timer = pursuit_duration 
+func _on_detection_area_body_exited(body: Node3D) -> void:
+    if body.is_in_group("player") and body == target:
+        # Don't immediately lose target, check in chase behavior
+        pass 

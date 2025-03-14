@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://c8u8pd5xfvt8q"]
 
-[ext_resource type="Script" path="res://src/levels/game.gd" id="1_yjk2t"]
+[ext_resource type="Script" uid="uid://wb5l0hygerm0" path="res://src/levels/game.gd" id="1_yjk2t"]
 
 [node name="Game" type="Node"]
 script = ExtResource("1_yjk2t")
@@ -43,4 +43,4 @@ grow_vertical = 2
 text = "Game Scene (Under Development)"
 horizontal_alignment = 1
 
-[connection signal="pressed" from="CanvasLayer/UI/BackButton" to="." method="_on_back_button_pressed"] 
+[connection signal="pressed" from="CanvasLayer/UI/BackButton" to="." method="_on_back_button_pressed"]

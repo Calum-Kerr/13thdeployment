@@ -1,10 +1,10 @@
 [gd_scene load_steps=11 format=3 uid="uid://c6u8pd5xfvt8w"]
 
-[ext_resource type="Script" path="res://src/levels/level_manager.gd" id="1_yjk2t"]
+[ext_resource type="Script" uid="uid://dbsr1nklfvq0i" path="res://src/levels/level_manager.gd" id="1_yjk2t"]
 [ext_resource type="PackedScene" uid="uid://c4u8pd5xfvt8u" path="res://src/systems/enemy_spawner.tscn" id="2_abcde"]
 [ext_resource type="PackedScene" uid="uid://c2u8pd5xfvt8s" path="res://src/enemies/standard_enemy.tscn" id="3_fghij"]
 [ext_resource type="PackedScene" uid="uid://c3u8pd5xfvt8t" path="res://src/enemies/mini_boss.tscn" id="4_klmno"]
-[ext_resource type="Script" path="res://src/debug/enemy_test_controller.gd" id="5_pqrst"]
+[ext_resource type="Script" uid="uid://hnqwfbk5tc07" path="res://src/debug/enemy_test_controller.gd" id="5_pqrst"]
 [ext_resource type="PackedScene" uid="uid://c7u8pd5xfvt8x" path="res://src/debug/test_player.tscn" id="6_uvwxy"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_fghij"]
@@ -172,4 +172,4 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -20)
 [connection signal="pressed" from="TestUI/ActionPanel/VBoxContainer/RangedAttackButton" to="TestController" method="force_enemy_action" binds= ["StandardEnemy", "ranged_attack"]]
 [connection signal="pressed" from="TestUI/ActionPanel/VBoxContainer/MiniBossAttackButton" to="TestController" method="force_enemy_action" binds= ["MiniBoss", "attack"]]
 [connection signal="pressed" from="TestUI/ActionPanel/VBoxContainer/SpecialAttackButton" to="TestController" method="force_enemy_action" binds= ["MiniBoss", "special_attack"]]
-[connection signal="pressed" from="TestUI/ActionPanel/VBoxContainer/DashAttackButton" to="TestController" method="force_enemy_action" binds= ["MiniBoss", "dash_attack"]] 
+[connection signal="pressed" from="TestUI/ActionPanel/VBoxContainer/DashAttackButton" to="TestController" method="force_enemy_action" binds= ["MiniBoss", "dash_attack"]]

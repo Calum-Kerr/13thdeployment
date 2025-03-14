@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="ConsumableItem" load_steps=2 format=3 uid="uid://c7u8pd5xfvt8q"]
 
-[ext_resource type="Script" path="res://src/player/inventory/consumable_item.gd" id="1_yjk2r"]
+[ext_resource type="Script" uid="uid://dpxpka4wor7dd" path="res://src/player/inventory/consumable_item.gd" id="1_yjk2r"]
 
 [resource]
 script = ExtResource("1_yjk2r")
@@ -18,4 +18,4 @@ cures_poison = false
 cures_bleed = false
 cures_frost = false
 cures_curse = false
-use_animation = "use_estus" 
+use_animation = "use_estus"

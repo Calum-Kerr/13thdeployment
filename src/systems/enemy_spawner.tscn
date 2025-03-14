@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://c4u8pd5xfvt8u"]
 
-[ext_resource type="Script" path="res://src/systems/enemy_spawner.gd" id="1_yjk2t"]
+[ext_resource type="Script" uid="uid://cd0skga2xyhlb" path="res://src/systems/enemy_spawner.gd" id="1_yjk2t"]
 
 [node name="EnemySpawner" type="Node"]
 script = ExtResource("1_yjk2t")
@@ -9,4 +9,4 @@ respawn_enemies = true
 player_distance_spawn = 50.0
 player_distance_despawn = 70.0
 max_concurrent_enemies = 20
-initial_spawn_delay = 2.0 
+initial_spawn_delay = 2.0

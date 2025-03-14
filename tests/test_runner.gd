@@ -104,9 +104,9 @@ func _run_test_script(script_path: String) -> void:
 				test_instance.before_each()
 			
 			if test_instance.has_method(method_name):
-				try:
-					test_instance.call(method_name)
-				catch(error):
+				var error = null
+				test_instance.call(method_name)
+				if error:
 					var error_info = error
 					print(LOG_PREFIX + "    FAILED: " + error_info["source"] + " at line " + str(error_info["line"]))
 					success = false

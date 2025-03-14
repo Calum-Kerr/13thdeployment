@@ -25,6 +25,9 @@ var can_use_ranged_attack: bool = true
 var block_timer: float = 0.0
 var block_cooldown: float = 3.0
 var ranged_attack_timer: float = 0.0
+var player_detected: bool = false
+var pursuit_timer: float = 0.0
+var pursuit_duration: float = 5.0
 
 # Additional state for this enemy type
 enum StandardEnemyState {BLOCK, DODGE, RANGED_ATTACK}
@@ -44,10 +47,9 @@ func _ready() -> void:
 		animation_player.get_animation("dodge").loop_mode = Animation.LOOP_NONE
 	
 	# Set standard enemy specific stats
-	max_health = 100.0
-	health = max_health
+	base_health = 100.0
+	current_health = base_health
 	attack_damage = 15.0
-	defense = 8.0
 	attack_range = 1.8
 	attack_cooldown = 1.2
 	
@@ -55,7 +57,7 @@ func _ready() -> void:
 	add_to_group("enemies")
 	
 	# Find player if not already set
-	if not player_ref:
+	if not target:
 		_find_player()
 
 func _physics_process(delta: float) -> void:
@@ -77,23 +79,21 @@ func _physics_process(delta: float) -> void:
 	# Add custom behavior
 	_custom_behavior(delta)
 
-func _custom_behavior(delta: float) -> bool:
+func _custom_behavior(delta: float) -> void:
 	"""Custom behavior for standard enemy."""
 	# If player is attacking, consider defensive behavior
-	if player_ref and player_ref.has_method("is_attacking") and player_ref.is_attacking():
-		if current_state != EnemyState.STAGGER and current_state != EnemyState.DEAD:
+	if target and target.has_method("is_attacking") and target.is_attacking():
+		if current_state != EnemyState.STAGGERED and current_state != EnemyState.DEAD:
 			_defensive_behavior()
-			return true
+			return
 	
 	# Consider ranged attack if available
-	if has_ranged_attack and can_use_ranged_attack and player_ref:
-		var distance = global_position.distance_to(player_ref.global_position)
+	if has_ranged_attack and can_use_ranged_attack and target:
+		var distance = global_position.distance_to(target.global_position)
 		if distance > attack_range and distance <= ranged_attack_range:
 			if randf() < ranged_attack_chance:
 				_perform_ranged_attack()
-				return true
-	
-	return false
+				return
 
 func _choose_attack() -> String:
 	"""Choose an attack type with possible combos."""
@@ -146,9 +146,9 @@ func _block() -> void:
 
 func _dodge() -> void:
 	"""Dodge away from player."""
-	if player_ref:
+	if target:
 		# Calculate dodge direction (away from player)
-		var dodge_dir = (global_position - player_ref.global_position).normalized()
+		var dodge_dir = (global_position - target.global_position).normalized()
 		
 		# Apply dodge movement
 		velocity = dodge_dir * movement_speed * 2.0
@@ -189,7 +189,7 @@ func _perform_ranged_attack() -> void:
 
 func _spawn_projectile() -> void:
 	"""Spawn a projectile for ranged attack."""
-	if player_ref:
+	if target:
 		# Get projectile scene
 		var projectile_scene = load("res://src/projectiles/enemy_projectile.tscn")
 		if projectile_scene:
@@ -202,7 +202,7 @@ func _spawn_projectile() -> void:
 			projectile.global_position = spawn_point.global_position
 			
 			# Calculate direction to player
-			var direction = (player_ref.global_position - spawn_point.global_position).normalized()
+			var direction = (target.global_position - spawn_point.global_position).normalized()
 			
 			# Set projectile direction and damage
 			if projectile.has_method("initialize"):
@@ -231,21 +231,13 @@ func take_damage(damage: float, attacker = null) -> void:
 		is_blocking = false 
 
 # Handle detection area signals
-func _on_detection_area_body_entered(body):
+func _on_detection_area_body_entered(body: Node3D) -> void:
 	if body.is_in_group("player"):
-		player_ref = body
+		target = body
 		player_detected = true
 		_change_state(EnemyState.CHASE)
 
-func _on_detection_area_body_exited(body):
-	if body.is_in_group("player") and body == player_ref:
+func _on_detection_area_body_exited(body: Node3D) -> void:
+	if body.is_in_group("player") and body == target:
 		player_detected = false
-		pursuit_timer = pursuit_duration
-
-# Handle block timer timeout
-func _on_block_timer_timeout():
-	is_blocking = false
-
-# Handle ranged attack timer timeout
-func _on_ranged_attack_timer_timeout():
-	can_use_ranged_attack = true 
+		pursuit_timer = pursuit_duration 

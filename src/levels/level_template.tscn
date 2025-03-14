@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://c5u8pd5xfvt8v"]
 
-[ext_resource type="Script" path="res://src/levels/level_manager.gd" id="1_yjk2t"]
+[ext_resource type="Script" uid="uid://dbsr1nklfvq0i" path="res://src/levels/level_manager.gd" id="1_yjk2t"]
 [ext_resource type="PackedScene" uid="uid://c4u8pd5xfvt8u" path="res://src/systems/enemy_spawner.tscn" id="2_abcde"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_fghij"]
@@ -69,4 +69,4 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0.5, 10)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 
 [node name="PlayerSpawnPoint" type="Marker3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -20) 
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -20)

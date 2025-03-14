@@ -1,6 +1,6 @@
 [gd_scene load_steps=10 format=3 uid="uid://c3u8pd5xfvt8t"]
 
-[ext_resource type="Script" path="res://src/enemies/mini_boss.gd" id="1_yjk2t"]
+[ext_resource type="Script" uid="uid://cpa4em0kl30c7" path="res://src/enemies/mini_boss.gd" id="1_yjk2t"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_lfmyv"]
 radius = 0.6
@@ -32,9 +32,9 @@ emission_shape = 1
 emission_sphere_radius = 1.0
 direction = Vector3(0, 1, 0)
 spread = 180.0
-gravity = Vector3(0, 1, 0)
 initial_velocity_min = 2.0
 initial_velocity_max = 5.0
+gravity = Vector3(0, 1, 0)
 scale_min = 0.1
 scale_max = 0.3
 color = Color(0.6, 0.2, 0.8, 1)
@@ -102,4 +102,4 @@ draw_pass_1 = SubResource("SphereMesh_f83jk")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
 
 [connection signal="body_entered" from="DetectionArea" to="." method="_on_detection_area_body_entered"]
-[connection signal="body_exited" from="DetectionArea" to="." method="_on_detection_area_body_exited"] 
+[connection signal="body_exited" from="DetectionArea" to="." method="_on_detection_area_body_exited"]

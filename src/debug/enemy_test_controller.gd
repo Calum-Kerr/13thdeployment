@@ -163,9 +163,9 @@ func _get_enemy_debug_info(enemy) -> String:
     
     # Health
     if enemy.has_method("get_health"):
-        info += "Health: " + str(enemy.health) + "/" + str(enemy.max_health) + "\n"
+        info += "Health: " + str(enemy.get_health()) + "/" + str(enemy.get_max_health()) + "\n"
     else:
-        info += "Health: " + str(enemy.health) + "/" + str(enemy.max_health) + "\n"
+        info += "Health: " + str(enemy.current_health) + "/" + str(enemy.base_health) + "\n"
     
     # State
     info += "State: " + str(enemy.current_state) + "\n"

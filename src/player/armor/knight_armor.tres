@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="ArmorData" load_steps=2 format=3 uid="uid://b8u8pd5xfvt8q"]
 
-[ext_resource type="Script" path="res://src/player/armor/armor_data.gd" id="1_yjk2r"]
+[ext_resource type="Script" uid="uid://jdn08qjs84ek" path="res://src/player/armor/armor_data.gd" id="1_yjk2r"]
 
 [resource]
 script = ExtResource("1_yjk2r")
@@ -21,4 +21,4 @@ frost_resistance = 5.0
 curse_resistance = 5.0
 has_special_effect = false
 special_effect_description = ""
-model_path = "res://assets/models/armor/knight_armor.glb" 
+model_path = "res://assets/models/armor/knight_armor.glb"

@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://c3u8pd5xfvt8q"]
 
-[ext_resource type="Script" path="res://src/ui/options.gd" id="1_yjk2t"]
+[ext_resource type="Script" uid="uid://u7dxhnf30h22" path="res://src/ui/options.gd" id="1_yjk2t"]
 
 [node name="Options" type="Control"]
 layout_mode = 3
@@ -89,4 +89,4 @@ text = "Back"
 [connection signal="value_changed" from="VBoxContainer/MusicVolumeSlider" to="." method="_on_music_volume_slider_value_changed"]
 [connection signal="value_changed" from="VBoxContainer/SFXVolumeSlider" to="." method="_on_sfx_volume_slider_value_changed"]
 [connection signal="toggled" from="VBoxContainer/FullscreenCheckBox" to="." method="_on_fullscreen_check_box_toggled"]
-[connection signal="pressed" from="VBoxContainer/BackButton" to="." method="_on_back_button_pressed"] 
+[connection signal="pressed" from="VBoxContainer/BackButton" to="." method="_on_back_button_pressed"]

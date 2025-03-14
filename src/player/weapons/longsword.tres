@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3 uid="uid://bxgj8y7r4q3vw"]
 
-[ext_resource type="Script" path="res://src/player/weapons/weapon_data.gd" id="1_yjk2r"]
+[ext_resource type="Script" uid="uid://ccu6ebx57kjxt" path="res://src/player/weapons/weapon_data.gd" id="1_yjk2r"]
 
 [resource]
 script = ExtResource("1_yjk2r")
@@ -31,4 +31,4 @@ special_attack_fp_cost = 0.0
 model_path = "res://assets/models/weapons/longsword.glb"
 light_attack_anim = "light_attack"
 heavy_attack_anim = "heavy_attack"
-special_attack_anim = "" 
+special_attack_anim = ""
