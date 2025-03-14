@@ -240,4 +240,11 @@ func _on_detection_area_body_entered(body: Node3D) -> void:
 func _on_detection_area_body_exited(body: Node3D) -> void:
 	if body.is_in_group("player") and body == target:
 		player_detected = false
-		pursuit_timer = pursuit_duration 
+		pursuit_timer = pursuit_duration
+
+# Find player in the scene
+func _find_player() -> void:
+	var player = get_tree().get_first_node_in_group("player")
+	if player:
+		target = player
+		_check_for_player() 
