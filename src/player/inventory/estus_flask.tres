@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="ConsumableItem" load_steps=2 format=3 uid="uid://c8u8pd5xfvt8q"]
+
+[ext_resource type="Script" path="res://src/player/inventory/consumable_item.gd" id="1_yjk2r"]
+
+[resource]
+script = ExtResource("1_yjk2r")
+id = "estus_flask"
+name = "Estus Flask"
+description = "An emerald flask filled with golden estus. Restores a large amount of HP."
+quantity = 5
+max_quantity = 10
+use_time = 1.5
+can_use_while_moving = false
+effect_type = 0
+effect_value = 150.0
+effect_duration = 0.0
+cures_poison = false
+cures_bleed = false
+cures_frost = false
+cures_curse = false
+use_animation = "use_estus" 

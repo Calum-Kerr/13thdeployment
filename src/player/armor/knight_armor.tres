@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="ArmorData" load_steps=2 format=3 uid="uid://c8u8pd5xfvt8q"]
+
+[ext_resource type="Script" path="res://src/player/armor/armor_data.gd" id="1_yjk2r"]
+
+[resource]
+script = ExtResource("1_yjk2r")
+id = "knight_armor"
+name = "Knight Armor"
+description = "Standard armor worn by knights. Offers good physical protection at the cost of weight."
+type = 1
+physical_defense = 40.0
+magic_defense = 10.0
+fire_defense = 15.0
+lightning_defense = 5.0
+dark_defense = 10.0
+poise = 20.0
+weight = 12.0
+bleed_resistance = 15.0
+poison_resistance = 10.0
+frost_resistance = 5.0
+curse_resistance = 5.0
+has_special_effect = false
+special_effect_description = ""
+model_path = "res://assets/models/armor/knight_armor.glb" 

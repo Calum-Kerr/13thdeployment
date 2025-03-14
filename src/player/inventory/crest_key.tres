@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="KeyItem" load_steps=2 format=3 uid="uid://c8u8pd5xfvt8q"]
+
+[ext_resource type="Script" path="res://src/player/inventory/key_item.gd" id="1_yjk2r"]
+
+[resource]
+script = ExtResource("1_yjk2r")
+id = "crest_key"
+name = "Crest Key"
+description = "An ornate key bearing the royal crest. Unlocks the gate to the ancient cathedral."
+is_quest_item = true
+can_be_discarded = false
+associated_quest = "cathedral_quest"
+unlocks_area = "cathedral_gate"
+lore_text = "This key once belonged to the royal family who ruled these lands centuries ago. The crest depicts a dragon encircling a sword, symbolizing the covenant between the royal bloodline and the ancient dragons.
+
+Legend says that the cathedral beyond the gate houses a powerful artifact that was sealed away to prevent catastrophe. Only those of royal blood were permitted to enter, but now the royal line is extinct, and the secrets of the cathedral are lost to time." 

@@ -21,27 +21,27 @@ A web browser-based Souls-like game built with Godot, featuring tight combat mec
 ## Core Systems
 
 ### Player Character
-- [ ] Character controller
-  - [ ] Movement system with weight and momentum
-  - [ ] Stamina management
-  - [ ] Equipment load affecting movement
-  - [ ] Dodge/roll mechanics with i-frames
-  - [ ] Fall damage calculation
-- [ ] Combat mechanics
-  - [ ] Light/heavy attack system
-  - [ ] Weapon movesets
-  - [ ] Parry/riposte system
-  - [ ] Block/shield mechanics
-  - [ ] Lock-on targeting
-- [ ] Character stats
-  - [ ] Attribute system (Strength, Dexterity, etc.)
-  - [ ] Leveling mechanism
-  - [ ] Health/stamina/focus points
-- [ ] Equipment system
-  - [ ] Weapon slots with different categories
-  - [ ] Armor slots affecting defense and movement
-  - [ ] Quick-swap equipment
-  - [ ] Item usage (estus flask equivalent)
+- [x] Character controller
+  - [x] Movement system with weight and momentum
+  - [x] Stamina management
+  - [x] Equipment load affecting movement
+  - [x] Dodge/roll mechanics with i-frames
+  - [x] Fall damage calculation
+- [x] Combat mechanics
+  - [x] Light/heavy attack system
+  - [x] Weapon movesets
+  - [x] Parry/riposte system
+  - [x] Block/shield mechanics
+  - [x] Lock-on targeting
+- [x] Character stats
+  - [x] Attribute system (Strength, Dexterity, etc.)
+  - [x] Leveling mechanism
+  - [x] Health/stamina/focus points
+- [x] Equipment system
+  - [x] Weapon slots with different categories
+  - [x] Armor slots affecting defense and movement
+  - [x] Quick-swap equipment
+  - [x] Item usage (estus flask equivalent)
 
 ### Enemy Design
 - [ ] Base enemy class
