@@ -9,6 +9,7 @@ TestPlayer: A simplified player character for testing enemy behaviors.
 @export var move_speed: float = 5.0
 @export var health: float = 100.0
 @export var max_health: float = 100.0
+@export var controller_sensitivity: float = 0.6  # Reduce this to lower controller sensitivity
 
 # Signals
 signal health_changed(current_health, max_health)
@@ -41,8 +42,29 @@ func _physics_process(delta):
         if attack_cooldown <= 0:
             attacking = false
     
-    # Get input direction
-    var input_dir = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
+    # Get input direction - check both keyboard and controller
+    var input_dir = Vector2.ZERO
+    
+    # Keyboard input
+    if Input.is_action_pressed("ui_left") or Input.is_action_pressed("ui_right") or Input.is_action_pressed("ui_up") or Input.is_action_pressed("ui_down"):
+        input_dir = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
+    # Controller input (with sensitivity adjustment)
+    else:
+        var joy_x = Input.get_joy_axis(0, JOY_AXIS_LEFT_X)
+        var joy_y = Input.get_joy_axis(0, JOY_AXIS_LEFT_Y)
+        
+        # Apply deadzone
+        if abs(joy_x) < 0.2:
+            joy_x = 0
+        if abs(joy_y) < 0.2:
+            joy_y = 0
+            
+        # Apply sensitivity
+        joy_x *= controller_sensitivity
+        joy_y *= controller_sensitivity
+        
+        input_dir = Vector2(joy_x, joy_y)
+    
     var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
     
     # Apply movement
@@ -62,9 +84,10 @@ func _physics_process(delta):
     # Move the character
     move_and_slide()
     
-    # Handle attack input
-    if Input.is_action_just_pressed("ui_accept") and attack_cooldown <= 0:
-        _attack()
+    # Handle attack input (keyboard and controller)
+    if Input.is_action_just_pressed("ui_accept") or Input.is_joy_button_pressed(0, JOY_BUTTON_A):
+        if attack_cooldown <= 0:
+            _attack()
 
 # Handle taking damage
 func take_damage(damage: float, attacker = null):
