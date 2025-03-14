@@ -37,6 +37,13 @@ func _ready():
     special_attack_particles = $SpecialAttackParticles
     if special_attack_particles:
         special_attack_particles.emitting = false
+    
+    # Add to mini-bosses group
+    add_to_group("mini_bosses")
+    
+    # Find player if not already set
+    if not player_ref:
+        _find_player()
 
 # Override physics process
 func _physics_process(delta):
@@ -195,4 +202,16 @@ func _on_death():
     
     # Drop special loot
     # This would connect to your loot system
-    emit_signal("enemy_killed", 150)  # More souls than standard enemies 
+    emit_signal("enemy_killed", 150)  # More souls than standard enemies
+
+# Handle detection area signals
+func _on_detection_area_body_entered(body):
+    if body.is_in_group("player"):
+        player_ref = body
+        player_detected = true
+        _change_state(STATE.CHASE)
+
+func _on_detection_area_body_exited(body):
+    if body.is_in_group("player") and body == player_ref:
+        player_detected = false
+        pursuit_timer = pursuit_duration 

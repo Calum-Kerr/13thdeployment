@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://c7u8pd5xfvt8x"]
+[gd_scene load_steps=9 format=3 uid="uid://c7u8pd5xfvt8x"]
 
 [ext_resource type="Script" path="res://src/debug/test_player.gd" id="1_yjk2t"]
 
@@ -29,9 +29,38 @@ tracks/0/keys = {
 "values": [Vector3(0, 0.9, 0), Vector3(0, 0.9, -0.3), Vector3(0, 0.9, 0)]
 }
 
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_fghij"]
+[sub_resource type="Animation" id="Animation_fghij"]
+resource_name = "die"
+length = 1.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MeshInstance3D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(0.5, 1),
+"update": 0,
+"values": [Vector3(0, 0.9, 0), Vector3(0, 0.2, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("MeshInstance3D:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(0.5, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(1.5708, 0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_klmno"]
 _data = {
-"attack": SubResource("Animation_abcde")
+"attack": SubResource("Animation_abcde"),
+"die": SubResource("Animation_fghij")
 }
 
 [node name="TestPlayer" type="CharacterBody3D" groups=["player"]]
@@ -50,11 +79,27 @@ surface_material_override/0 = SubResource("StandardMaterial3D_xfvt8")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
-"": SubResource("AnimationLibrary_fghij")
+"": SubResource("AnimationLibrary_klmno")
 }
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 5, 5)
+
+[node name="HitBox" type="Area3D" parent="."]
+collision_layer = 64
+collision_mask = 16
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HitBox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, -0.6)
+shape = SubResource("CapsuleShape3D_lfmyv")
+
+[node name="HurtBox" type="Area3D" parent="."]
+collision_layer = 32
+collision_mask = 8
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HurtBox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("CapsuleShape3D_lfmyv")
 
 [node name="HUD" type="Control" parent="."]
 layout_mode = 3

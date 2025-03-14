@@ -12,15 +12,19 @@ Extends the base enemy class with specific behaviors.
 @export var dodge_chance: float = 0.2
 @export var block_chance: float = 0.3
 @export var has_ranged_attack: bool = false
-@export var ranged_attack_damage: float = 10.0
+@export var ranged_attack_damage: float = 8.0
 @export var ranged_attack_range: float = 8.0
-@export var ranged_attack_cooldown: float = 3.0
+@export var ranged_attack_cooldown: float = 5.0
+@export var ranged_attack_chance: float = 0.3
 
 # Enemy-specific variables
 var combo_count: int = 0
 var max_combo_attacks: int = 3
 var is_blocking: bool = false
 var can_use_ranged_attack: bool = true
+var block_timer: float = 0.0
+var block_cooldown: float = 3.0
+var ranged_attack_timer: float = 0.0
 
 # Additional state for this enemy type
 enum StandardEnemyState {BLOCK, DODGE, RANGED_ATTACK}
@@ -38,27 +42,58 @@ func _ready() -> void:
 	
 	if animation_player.has_animation("dodge"):
 		animation_player.get_animation("dodge").loop_mode = Animation.LOOP_NONE
+	
+	# Set standard enemy specific stats
+	max_health = 100.0
+	health = max_health
+	attack_damage = 15.0
+	defense = 8.0
+	attack_range = 1.8
+	attack_cooldown = 1.2
+	
+	# Add to standard enemies group
+	add_to_group("enemies")
+	
+	# Find player if not already set
+	if not player_ref:
+		_find_player()
 
 func _physics_process(delta: float) -> void:
 	"""Handle physics updates with additional behaviors."""
 	super._physics_process(delta)
 	
+	# Update block timer
+	if block_timer > 0:
+		block_timer -= delta
+		if block_timer <= 0:
+			is_blocking = false
+	
+	# Update ranged attack timer
+	if ranged_attack_timer > 0:
+		ranged_attack_timer -= delta
+		if ranged_attack_timer <= 0:
+			can_use_ranged_attack = true
+	
 	# Add custom behavior
 	_custom_behavior(delta)
 
-func _custom_behavior(delta: float) -> void:
+func _custom_behavior(delta: float) -> bool:
 	"""Custom behavior for standard enemy."""
-	# Implement defensive behavior when player is attacking
-	if current_state == EnemyState.CHASE and target and is_instance_valid(target):
-		var player = target as PlayerCharacter
-		if player and player.is_attacking():
+	# If player is attacking, consider defensive behavior
+	if player_ref and player_ref.has_method("is_attacking") and player_ref.is_attacking():
+		if current_state != EnemyState.STAGGER and current_state != EnemyState.DEAD:
 			_defensive_behavior()
+			return true
 	
-	# Handle ranged attacks
-	if has_ranged_attack and can_use_ranged_attack and current_state == EnemyState.CHASE:
-		var distance_to_target = global_position.distance_to(target.global_position)
-		if distance_to_target > attack_range and distance_to_target <= ranged_attack_range:
-			_perform_ranged_attack()
+	# Consider ranged attack if available
+	if has_ranged_attack and can_use_ranged_attack and player_ref:
+		var distance = global_position.distance_to(player_ref.global_position)
+		if distance > attack_range and distance <= ranged_attack_range:
+			if randf() < ranged_attack_chance:
+				_perform_ranged_attack()
+				return true
+	
+	return false
 
 func _choose_attack() -> String:
 	"""Choose an attack type with possible combos."""
@@ -85,88 +120,98 @@ func _defensive_behavior() -> void:
 	if is_blocking:
 		return
 		
-	# Random chance to block or dodge
-	var rand = randf()
+	# Choose between blocking and dodging
+	var total_chance = dodge_chance + block_chance
+	var random_value = randf() * total_chance
 	
-	if rand < block_chance:
-		_block()
-	elif rand < block_chance + dodge_chance:
+	if random_value < dodge_chance:
 		_dodge()
+	elif random_value < total_chance and block_timer <= 0:
+		_block()
 
 func _block() -> void:
 	"""Block incoming attacks."""
-	is_blocking = true
-	animation_player.play("block")
-	
-	# Reduce movement speed while blocking
-	movement_speed *= 0.5
-	
-	# End block after a short duration
-	await get_tree().create_timer(1.5).timeout
-	
-	if current_state != EnemyState.DEAD:
-		is_blocking = false
-		movement_speed *= 2.0  # Restore original speed
+	if block_timer <= 0:
+		is_blocking = true
+		block_timer = 1.0
 		
-		if current_state == EnemyState.CHASE:
-			animation_player.play("run")
+		# Play block animation
+		if animation_player:
+			animation_player.play("block")
+		
+		# Set block cooldown
+		await get_tree().create_timer(1.0).timeout
+		is_blocking = false
+		block_timer = block_cooldown
 
 func _dodge() -> void:
 	"""Dodge away from player."""
-	# Calculate dodge direction (away from player)
-	var dodge_direction = (global_position - target.global_position).normalized()
-	
-	# Apply dodge movement
-	velocity = dodge_direction * movement_speed * 2.0
-	
-	# Play dodge animation
-	animation_player.play("dodge")
-	
-	# Wait for dodge animation to finish
-	await animation_player.animation_finished
-	
-	if current_state != EnemyState.DEAD:
-		if current_state == EnemyState.CHASE:
-			animation_player.play("run")
+	if player_ref:
+		# Calculate dodge direction (away from player)
+		var dodge_dir = (global_position - player_ref.global_position).normalized()
+		
+		# Apply dodge movement
+		velocity = dodge_dir * movement_speed * 2.0
+		
+		# Play dodge animation
+		if animation_player:
+			animation_player.play("dodge")
+		
+		# Move character
+		move_and_slide()
+		
+		# Return to chase state after dodge
+		await get_tree().create_timer(0.5).timeout
+		_change_state(EnemyState.CHASE)
 
 func _perform_ranged_attack() -> void:
 	"""Perform a ranged attack."""
-	if not can_use_ranged_attack:
-		return
-		
-	# Stop movement
-	velocity = Vector3.ZERO
+	# Set cooldown
+	can_use_ranged_attack = false
+	ranged_attack_timer = ranged_attack_cooldown
 	
-	# Face the target
-	look_at(Vector3(target.global_position.x, global_position.y, target.global_position.z), Vector3.UP)
+	# Change state to attack
+	_change_state(EnemyState.ATTACK)
 	
 	# Play ranged attack animation
-	animation_player.play("ranged_attack")
+	if animation_player:
+		animation_player.play("ranged_attack")
+		await animation_player.animation_finished
+	else:
+		# If no animation, wait a moment
+		await get_tree().create_timer(0.8).timeout
 	
-	# Disable ranged attacks during cooldown
-	can_use_ranged_attack = false
+	# Spawn projectile
+	_spawn_projectile()
 	
-	# Create projectile
-	await get_tree().create_timer(0.5).timeout  # Wait for animation to reach firing point
-	
-	if current_state != EnemyState.DEAD and target and is_instance_valid(target):
-		_spawn_projectile()
-	
-	# Wait for cooldown
-	await get_tree().create_timer(ranged_attack_cooldown).timeout
-	
-	can_use_ranged_attack = true
+	# Return to chase state
+	_change_state(EnemyState.CHASE)
 
 func _spawn_projectile() -> void:
 	"""Spawn a projectile for ranged attack."""
-	var projectile = preload("res://src/projectiles/enemy_projectile.tscn").instantiate()
-	get_tree().current_scene.add_child(projectile)
-	
-	# Set projectile properties
-	projectile.global_position = global_position + Vector3(0, 1.5, 0) - transform.basis.z * 0.5
-	projectile.direction = (target.global_position - projectile.global_position).normalized()
-	projectile.damage = ranged_attack_damage
-	projectile.source = self
+	if player_ref:
+		# Get projectile scene
+		var projectile_scene = load("res://src/projectiles/enemy_projectile.tscn")
+		if projectile_scene:
+			# Create projectile instance
+			var projectile = projectile_scene.instantiate()
+			get_tree().current_scene.add_child(projectile)
+			
+			# Set projectile properties
+			var spawn_point = $ProjectileSpawnPoint if has_node("ProjectileSpawnPoint") else self
+			projectile.global_position = spawn_point.global_position
+			
+			# Calculate direction to player
+			var direction = (player_ref.global_position - spawn_point.global_position).normalized()
+			
+			# Set projectile direction and damage
+			if projectile.has_method("initialize"):
+				projectile.initialize(direction, ranged_attack_damage, self)
+			else:
+				# Fallback if initialize method doesn't exist
+				projectile.direction = direction
+				projectile.damage = ranged_attack_damage
+				projectile.source = self
 
 func take_damage(damage: float, attacker = null) -> void:
 	"""Handle taking damage with blocking mechanic."""
@@ -184,3 +229,23 @@ func take_damage(damage: float, attacker = null) -> void:
 	# End blocking if staggered or dead
 	if current_state == EnemyState.STAGGERED or current_state == EnemyState.DEAD:
 		is_blocking = false 
+
+# Handle detection area signals
+func _on_detection_area_body_entered(body):
+	if body.is_in_group("player"):
+		player_ref = body
+		player_detected = true
+		_change_state(EnemyState.CHASE)
+
+func _on_detection_area_body_exited(body):
+	if body.is_in_group("player") and body == player_ref:
+		player_detected = false
+		pursuit_timer = pursuit_duration
+
+# Handle block timer timeout
+func _on_block_timer_timeout():
+	is_blocking = false
+
+# Handle ranged attack timer timeout
+func _on_ranged_attack_timer_timeout():
+	can_use_ranged_attack = true 

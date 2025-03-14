@@ -393,4 +393,27 @@ func _on_state_timer_timeout() -> void:
 # Virtual methods for derived classes to override
 func _custom_behavior(delta: float) -> void:
 	"""Custom behavior for derived enemy classes."""
-	pass 
+	pass
+
+# New methods for setting player reference and finding player
+func set_player(player):
+	"""Set the player reference directly."""
+	target = player
+	if target:
+		_check_for_player()
+
+func _find_player():
+	"""Find the player in the scene."""
+	var players = get_tree().get_nodes_in_group("player")
+	if players.size() > 0:
+		target = players[0]
+		if target:
+			_check_for_player()
+
+func _is_player_in_range() -> bool:
+	"""Check if the player is within the detection range."""
+	if target and is_instance_valid(target):
+		var distance = global_position.distance_to(target.global_position)
+		return distance <= perception_range
+
+	return false 

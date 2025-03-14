@@ -33,17 +33,56 @@ func _ready():
     await get_tree().create_timer(0.5).timeout
     
     # Get references
-    game_manager = get_node("/root/GameManager")
+    game_manager = get_node_or_null("/root/GameManager")
     if game_manager:
-        game_manager.connect("player_ready", _on_player_ready)
-        game_manager.connect("game_reset", _on_game_reset)
+        if game_manager.has_signal("player_ready"):
+            game_manager.connect("player_ready", _on_player_ready)
+        if game_manager.has_signal("game_reset"):
+            game_manager.connect("game_reset", _on_game_reset)
     
     # Connect enemy spawner signals
     if enemy_spawner:
-        enemy_spawner.connect("all_enemies_defeated", _on_all_enemies_defeated)
+        if enemy_spawner.has_signal("all_enemies_defeated"):
+            enemy_spawner.connect("all_enemies_defeated", _on_all_enemies_defeated)
     
     # Setup level
     _setup_level()
+    
+    # For test level, manually find player and activate enemies
+    if get_tree().get_nodes_in_group("player").size() > 0:
+        player_ref = get_tree().get_nodes_in_group("player")[0]
+        _activate_enemies_for_testing()
+
+# Activate enemies for testing
+func _activate_enemies_for_testing():
+    # Find all enemies in the scene
+    var enemies = get_tree().get_nodes_in_group("enemies")
+    enemies.append_array(get_tree().get_nodes_in_group("mini_bosses"))
+    
+    # Activate each enemy
+    for enemy in enemies:
+        if enemy.has_method("set_player"):
+            enemy.set_player(player_ref)
+        
+        # Make sure enemies are in IDLE state initially
+        if enemy.has_method("_change_state") and enemy.has_property("STATE"):
+            enemy._change_state(enemy.STATE.IDLE)
+    
+    # If we have an enemy spawner, activate it
+    if enemy_spawner:
+        enemy_spawner.player_ref = player_ref
+        
+        # Manually register spawn points for existing enemies
+        for enemy in enemies:
+            var spawn_point = enemy_spawner.add_spawn_point(
+                enemy.global_position,
+                "standard" if enemy.is_in_group("enemies") else "mini_boss",
+                standard_enemy_respawn_time if enemy.is_in_group("enemies") else mini_boss_respawn_time,
+                "",
+                enemy.is_in_group("mini_bosses")
+            )
+            spawn_point.enemy_instance = enemy
+            enemy_spawner.active_enemies += 1
 
 # Setup the level with spawn points
 func _setup_level():
