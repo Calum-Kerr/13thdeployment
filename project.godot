@@ -13,8 +13,8 @@ config_version=5
 config/name="Soulsborne Web Game"
 config/description="A web browser-based Souls-like game with tight combat mechanics, interconnected level design, deep lore, challenging difficulty, and asynchronous multiplayer elements."
 run/main_scene="res://src/main.tscn"
-config/features=PackedStringArray("4.4")
-config/icon="res://icon.svg"
+config/features=PackedStringArray("4.2", "Forward Plus")
+config/icon="res://icon.png"
 
 [autoload]
 
@@ -175,13 +175,13 @@ prev_weapon={
 
 [layer_names]
 
-3d_physics/layer_1="World"
+3d_physics/layer_1="Environment"
 3d_physics/layer_2="Player"
-3d_physics/layer_3="Enemies"
-3d_physics/layer_4="Items"
-3d_physics/layer_5="PlayerHitbox"
-3d_physics/layer_6="EnemyHitbox"
-3d_physics/layer_7="Interactable"
+3d_physics/layer_3="Enemy"
+3d_physics/layer_4="EnemyHitBox"
+3d_physics/layer_5="EnemyHurtBox"
+3d_physics/layer_6="PlayerHitBox"
+3d_physics/layer_7="PlayerHurtBox"
 3d_physics/layer_8="Projectile"
 
 [physics]
