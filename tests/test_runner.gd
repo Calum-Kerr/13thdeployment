@@ -106,8 +106,7 @@ func _run_test_script(script_path: String) -> void:
 			if test_instance.has_method(method_name):
 				try:
 					test_instance.call(method_name)
-				except:
-					var error = get_stack()[0]
+				catch(error):
 					print(LOG_PREFIX + "    FAILED: " + error["source"] + " at line " + str(error["line"]))
 					success = false
 			

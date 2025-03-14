@@ -98,7 +98,7 @@ func initialize_class(class_name: String) -> void:
         "Sorcerer":
             intelligence = 16
             faith = 7
-            attunement = 14
+            vitality = 8
         "Pyromancer":
             endurance = 12
             intelligence = 14

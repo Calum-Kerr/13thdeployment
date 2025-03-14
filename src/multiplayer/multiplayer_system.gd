@@ -1,5 +1,4 @@
 extends Node
-class_name MultiplayerSystem
 
 """
 MultiplayerSystem: Handles asynchronous multiplayer features.

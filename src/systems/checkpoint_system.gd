@@ -1,5 +1,4 @@
 extends Node
-class_name CheckpointSystem
 
 """
 CheckpointSystem: Manages checkpoints (bonfires) and player respawning.

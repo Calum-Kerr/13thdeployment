@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://b8u3qe4xkbsj5"]
 
-[ext_resource type="Script" path="res://src/main.gd" id="1_8f7vx"]
+[ext_resource type="Script" uid="uid://f6bw5fpgduxh" path="res://src/main.gd" id="1_8f7vx"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_8f7vx")
@@ -66,4 +66,4 @@ text = "v0.1.0"
 [connection signal="pressed" from="CanvasLayer/MainMenu/VBoxContainer/StartButton" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/MainMenu/VBoxContainer/OptionsButton" to="." method="_on_options_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/MainMenu/VBoxContainer/CreditsButton" to="." method="_on_credits_button_pressed"]
-[connection signal="pressed" from="CanvasLayer/MainMenu/VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"] 
+[connection signal="pressed" from="CanvasLayer/MainMenu/VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]

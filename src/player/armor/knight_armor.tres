@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ArmorData" load_steps=2 format=3 uid="uid://c8u8pd5xfvt8q"]
+[gd_resource type="Resource" script_class="ArmorData" load_steps=2 format=3 uid="uid://b8u8pd5xfvt8q"]
 
 [ext_resource type="Script" path="res://src/player/armor/armor_data.gd" id="1_yjk2r"]
 

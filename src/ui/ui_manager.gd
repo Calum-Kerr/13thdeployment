@@ -1,5 +1,4 @@
 extends Node
-class_name UIManager
 
 """
 UIManager: Manages all UI elements in the game.
