@@ -26,6 +26,12 @@ func _ready():
     var game_manager = get_node_or_null("/root/GameManager")
     if game_manager and game_manager.has_method("register_player"):
         game_manager.register_player(self)
+    
+    # Connect health signal to update health bar
+    connect("health_changed", Callable(self, "_on_health_changed"))
+    
+    # Initial health update
+    emit_signal("health_changed", health, max_health)
 
 # Handle physics updates
 func _physics_process(delta):
@@ -124,3 +130,9 @@ func _die():
 # Check if player is attacking (for enemy defensive behaviors)
 func is_attacking() -> bool:
     return is_attacking 
+
+# Update health bar
+func _on_health_changed(current_health, max_health):
+    var health_bar = $HUD/HealthBar
+    if health_bar:
+        health_bar.value = (current_health / max_health) * 100.0 

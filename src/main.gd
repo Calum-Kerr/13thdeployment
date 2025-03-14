@@ -6,24 +6,31 @@ Handles scene transitions and game initialization.
 """
 
 # Constants
-const GAME_VERSION = "0.1.0"
-const GAME_SCENE = "res://src/levels/game.tscn"
+const VERSION = "v0.1.0"
+const GAME_SCENE = "res://src/levels/enemy_test_level.tscn"
 const OPTIONS_SCENE = "res://src/ui/options.tscn"
 const CREDITS_SCENE = "res://src/ui/credits.tscn"
 
 # Node references
 @onready var main_menu = $CanvasLayer/MainMenu
 @onready var version_label = $CanvasLayer/MainMenu/VersionLabel
+@onready var enemy_test_level = $EnemyTestLevel
 
 func _ready() -> void:
 	"""Initialize the main scene."""
 	print("Main scene initialized")
 	
 	# Set version label
-	version_label.text = "v" + GAME_VERSION
+	if version_label:
+		version_label.text = VERSION
 	
 	# Initialize game systems
 	_initialize_game_systems()
+	
+	# Show menu, hide test level on start
+	main_menu.visible = true
+	enemy_test_level.process_mode = Node.PROCESS_MODE_DISABLED
+	enemy_test_level.visible = false
 
 func _initialize_game_systems() -> void:
 	"""Initialize all game systems."""
@@ -34,70 +41,53 @@ func _on_start_button_pressed() -> void:
 	"""Handle start button press."""
 	print("Starting game...")
 	
-	# Check if the game scene exists
-	if ResourceLoader.exists(GAME_SCENE):
-		# Transition to the game scene
-		get_tree().change_scene_to_file(GAME_SCENE)
-	else:
-		# Show an error message if the scene doesn't exist
-		print("Error: Game scene not found: " + GAME_SCENE)
-		var dialog = AcceptDialog.new()
-		dialog.title = "Error"
-		dialog.dialog_text = "Game scene not found. The game is still under development."
-		add_child(dialog)
-		dialog.popup_centered()
+	# Hide menu, show and enable test level
+	main_menu.visible = false
+	enemy_test_level.process_mode = Node.PROCESS_MODE_INHERIT
+	enemy_test_level.visible = true
+	
+	# Give focus to the game
+	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
 func _on_options_button_pressed() -> void:
 	"""Handle options button press."""
-	print("Opening options...")
+	print("Options button pressed")
 	
-	# Check if the options scene exists
-	if ResourceLoader.exists(OPTIONS_SCENE):
-		# Transition to the options scene
-		get_tree().change_scene_to_file(OPTIONS_SCENE)
-	else:
-		# Show an error message if the scene doesn't exist
-		print("Error: Options scene not found: " + OPTIONS_SCENE)
-		var dialog = AcceptDialog.new()
-		dialog.title = "Error"
-		dialog.dialog_text = "Options scene not found. The game is still under development."
-		add_child(dialog)
-		dialog.popup_centered()
+	# Create a simple options dialog
+	var dialog = AcceptDialog.new()
+	dialog.title = "Options"
+	dialog.dialog_text = "Options menu is under development."
+	add_child(dialog)
+	
+	# Show the dialog
+	dialog.popup_centered()
 
 func _on_credits_button_pressed() -> void:
 	"""Handle credits button press."""
-	print("Opening credits...")
+	print("Credits button pressed")
 	
-	# Check if the credits scene exists
-	if ResourceLoader.exists(CREDITS_SCENE):
-		# Transition to the credits scene
-		get_tree().change_scene_to_file(CREDITS_SCENE)
-	else:
-		# Show an error message if the scene doesn't exist
-		print("Error: Credits scene not found: " + CREDITS_SCENE)
-		var dialog = AcceptDialog.new()
-		dialog.title = "Error"
-		dialog.dialog_text = "Credits scene not found. The game is still under development."
-		add_child(dialog)
-		dialog.popup_centered()
+	# Create a simple credits dialog
+	var dialog = AcceptDialog.new()
+	dialog.title = "Credits"
+	dialog.dialog_text = "Soulsborne Web Game\nDeveloped with Godot Engine"
+	add_child(dialog)
+	
+	# Show the dialog
+	dialog.popup_centered()
 
 func _on_quit_button_pressed() -> void:
 	"""Handle quit button press."""
 	print("Quitting game...")
-	
-	# Show a confirmation dialog
-	var dialog = ConfirmationDialog.new()
-	dialog.title = "Quit Game"
-	dialog.dialog_text = "Are you sure you want to quit?"
-	dialog.get_ok_button().text = "Yes"
-	dialog.get_cancel_button().text = "No"
-	add_child(dialog)
-	
-	# Connect the confirmed signal
-	dialog.confirmed.connect(func():
-		# Quit the game
-		get_tree().quit()
-	)
-	
-	# Show the dialog
-	dialog.popup_centered() 
+	get_tree().quit()
+
+func _input(event):
+	# Return to menu when escape is pressed during gameplay
+	if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
+		if not main_menu.visible:
+			# Return to menu
+			main_menu.visible = true
+			enemy_test_level.process_mode = Node.PROCESS_MODE_DISABLED
+			enemy_test_level.visible = false
+			
+			# Release mouse
+			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE) 

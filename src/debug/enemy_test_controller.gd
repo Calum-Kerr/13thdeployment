@@ -43,6 +43,11 @@ func _ready():
     
     # Set initial camera
     _switch_camera("player")
+    
+    # Make sure debug overlay is initially hidden
+    debug_enabled = false
+    if debug_overlay:
+        debug_overlay.visible = debug_enabled
 
 # Process input for debug controls
 func _input(event):
@@ -129,6 +134,7 @@ func _create_debug_overlay():
         var label = Label.new()
         label.name = "Label_" + str(enemy.get_instance_id())
         label.text = _get_enemy_debug_info(enemy)
+        label.add_theme_color_override("font_color", Color(1, 0.8, 0.8))
         vbox.add_child(label)
     
     # Start updating debug info
